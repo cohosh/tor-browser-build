@@ -88,7 +88,7 @@ steps:
       clone_dir='[% c("basedir") %]/gclient/webrtc'
       mkdir -p "$clone_dir"
       cd "$clone_dir"
-      if [ ! -d "src" ];
+      if [ ! -f ".gclient" ];
       then
         # "fetch" is part of depot_tools.
         #fetch --nohooks --no-history webrtc
@@ -105,6 +105,7 @@ steps:
             "safesync_url": "",
           },
         ]
+      target_os = ["win"]
         '
         gclient sync --nohooks --no-history --with_branch_heads -r [% c("var/webrtc_tag") %]
         cd src
