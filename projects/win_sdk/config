@@ -1,0 +1,25 @@
+# vim: filetype=yaml sw=2
+version: 6bc5b906cb80f68367e03a069131299df2a8aa3b
+filename: 'win_sdk-[% c("version") %].zip'
+
+build: |
+  # Nothing to do.
+
+# How to produce this file:
+# In a Windows VM, install Git (https://git-scm.com/downloads) and
+# Python 2.7 (https://www.python.org/downloads/windows/).
+# Install Visual Studio Community (https://www.visualstudio.com/free-developer-offers/).
+# In the installer, select the "Desktop development with C++" workload,
+# and within it, uncheck every option except:
+#  * VC++ 2017 v141 toolset (x86,x64)
+#  * Windows 10 SDK (10.0.16299.0) for Desktop C++ [x86 and x64]
+#  * Visual C++ ATL support
+# Open Git Bash and clone depot_tools.
+#   git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+# Run the packaging script.
+#   cd depot_tools/win_toolchain
+#   /c/Python27/python package_from_installed.py -w 10.0.16299.0 2017
+input_files:
+  - filename: 'win_sdk-[% c("version") %].zip'
+    URL: 'https://people.torproject.org/~dcf/mirrors/win_sdk/[% c("version") %].zip'
+    sha256sum: 42a370830424701f4ff1f54680e25d58b2ab8c413e388affa874e6754e97e2b8
