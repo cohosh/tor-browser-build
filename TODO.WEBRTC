@@ -1,0 +1,4 @@
+* See if mingw-w64's headers and libs suffice; try to remove win_sdk.
+* Use a self-compiled clang, not Chromium's precompiled one (clang_base_path=, as in the mac build).
+  * This will allow building for windows-i686, for which there is no precompiled clang.
+* Check if, once we're using a self-compiled clang, we still need target_os = ["win"].
