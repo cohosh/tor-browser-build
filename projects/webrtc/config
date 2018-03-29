@@ -18,10 +18,19 @@ input_files:
   - project: binutils
     name: binutils
     enable: '[% c("var/linux") %]'
+  # windows needs a recent gcc only to compile the bootstrap gn.
+  - project: gcc
+    name: gcc
+    enable: '[% c("var/windows") %]'
+  - project: win_sdk
+    name: win_sdk
+    enable: '[% c("var/windows") %]'
   - filename: webrtc-linux.patch
     enable: '[% c("var/linux") %]'
   - filename: webrtc-mac.patch
     enable: '[% c("var/osx") %]'
+  - filename: webrtc-windows.patch
+    enable: '[% c("var/windows") %]'
 
 targets:
   linux:
@@ -67,6 +76,23 @@ targets:
         - libglib2.0-dev
         - pkg-config
         - python-biplist
+  windows:
+    var:
+      arch_deps:
+        - pkg-config
+        - libattr1
+        - libfuse2
+        - libglib2.0-0
+        - jq
+  windows-i686:
+    var:
+      webrtc:
+        lib_path: lib/libwebrtc-windows-386-magic.lib
+  windows-x86_64:
+    var:
+      webrtc:
+        lib_path: lib/libwebrtc-windows-amd64-magic.lib
+
 
 steps:
   fetch_sources:

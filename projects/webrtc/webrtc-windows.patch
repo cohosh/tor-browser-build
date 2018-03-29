@@ -1,0 +1,245 @@
+From 796d7655435fc9038017d2946c0331508ddf0071 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Wed, 28 Mar 2018 13:20:44 -0700
+Subject: [PATCH 1/3] Comment out _CopyDebugger and _CopyRuntime in
+ build/vs_toolchain.py.
+
+This function looks for a file dbghelp.dll that is not present in the
+SDK installed by Visual Studio Community:
+Exception: dbghelp.dll not found in ".../win_sdk/Debuggers/x64/dbghelp.dll"
+You must install the "Debugging Tools for Windows" feature from the Windows 10 SDK.
+
+The Visual Studio installer doesn't have a "Debugging Tools for Windows"
+option. The standalone SDK installer from
+https://developer.microsoft.com/en-us/windows/downloads/sdk-archive
+does; however just commenting out this call seems to make it
+unnecessary.
+---
+ vs_toolchain.py | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/build/vs_toolchain.py b/build/vs_toolchain.py
+index 7a258ed1d..b8e031a03 100755
+--- a/build/vs_toolchain.py
++++ b/build/vs_toolchain.py
+@@ -305,15 +305,15 @@ def CopyDlls(target_dir, configuration, target_cpu):
+   if not vs_runtime_dll_dirs:
+     return
+ 
+-  x64_runtime, x86_runtime = vs_runtime_dll_dirs
+-  runtime_dir = x64_runtime if target_cpu == 'x64' else x86_runtime
+-  _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=False)
+-  if configuration == 'Debug':
+-    _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=True)
+-  else:
+-    _CopyPGORuntime(target_dir, target_cpu)
+-
+-  _CopyDebugger(target_dir, target_cpu)
++  # x64_runtime, x86_runtime = vs_runtime_dll_dirs
++  # runtime_dir = x64_runtime if target_cpu == 'x64' else x86_runtime
++  # _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=False)
++  # if configuration == 'Debug':
++  #   _CopyRuntime(target_dir, runtime_dir, target_cpu, debug=True)
++  # else:
++  #   _CopyPGORuntime(target_dir, target_cpu)
++
++  # _CopyDebugger(target_dir, target_cpu)
+ 
+ 
+ def _CopyDebugger(target_dir, target_cpu):
+-- 
+2.11.0
+
+
+From 0462bedf5126537bfc6d246c630c158b617810d7 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Wed, 28 Mar 2018 18:48:27 -0700
+Subject: [PATCH 2/3] Set vc_bin_dir to a dummy value.
+
+This doesn't seem to be needed (it would contain e.g. cl.exe, which we
+don't use), but it needs to be set to appease the build scripts.
+---
+ toolchain/win/setup_toolchain.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/build/toolchain/win/setup_toolchain.py b/build/toolchain/win/setup_toolchain.py
+index a1d2ea4b2..c98f013ff 100644
+--- a/build/toolchain/win/setup_toolchain.py
++++ b/build/toolchain/win/setup_toolchain.py
+@@ -209,6 +209,7 @@ def main():
+     with open('environment.winrt_' + cpu, 'wb') as f:
+       f.write(env_block)
+ 
++  vc_bin_dir = "NONEXISTENT_VC_BIN_DIR"
+   assert vc_bin_dir
+   print 'vc_bin_dir = ' + gn_helpers.ToGNString(vc_bin_dir)
+   assert include_I
+-- 
+2.11.0
+
+From fe050ea847d1797adfe64ab702c2aae6bb37bae9 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Wed, 28 Mar 2018 20:49:21 -0700
+Subject: [PATCH 3/3] Disable the video_capture module.
+
+It depends on winsdk_samples code, which requires some SDK files that we
+don't have. E.g.,
+
+In file included from ../../third_party/winsdk_samples/Samples/multimedia/directshow/baseclasses/amextra.cpp:10:
+In file included from ../../third_party/winsdk_samples/Samples/multimedia/directshow/baseclasses/streams.h:185:
+../../third_party/winsdk_samples/Samples/multimedia/directshow/baseclasses/refclock.h(83,37):  error: unknown type name 'CAMSchedule'
+                        __inout_opt CAMSchedule * pSched = 0 );
+                                    ^
+---
+ BUILD.gn              | 8 ++++----
+ common_video/BUILD.gn | 2 +-
+ media/BUILD.gn        | 6 +++---
+ modules/BUILD.gn      | 2 +-
+ 4 files changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/BUILD.gn b/BUILD.gn
+index e59064452..bcbfd5107 100644
+--- a/BUILD.gn
++++ b/BUILD.gn
+@@ -277,7 +277,7 @@ if (!build_with_chromium) {
+       "logging",
+       "media",
+       "modules",
+-      "modules/video_capture:video_capture_internal_impl",
++      # "modules/video_capture:video_capture_internal_impl",
+       "ortc",
+       "p2p",
+       "pc",
+@@ -318,7 +318,7 @@ if (!build_with_chromium) {
+         "modules/audio_processing:audio_processing_tests",
+         "modules/remote_bitrate_estimator:bwe_simulations_tests",
+         "modules/rtp_rtcp:test_packet_masks_metrics",
+-        "modules/video_capture:video_capture_internal_impl",
++        # "modules/video_capture:video_capture_internal_impl",
+         "ortc:ortc_unittests",
+         "pc:peerconnection_unittests",
+         "pc:rtc_pc_unittests",
+@@ -336,7 +336,7 @@ if (!build_with_chromium) {
+           "sdk/android:libjingle_peerconnection_android_unittest",
+         ]
+       } else {
+-        deps += [ "modules/video_capture:video_capture_tests" ]
++        # deps += [ "modules/video_capture:video_capture_tests" ]
+       }
+       if (rtc_enable_protobuf) {
+         deps += [
+@@ -450,7 +450,7 @@ if (rtc_include_tests) {
+       # TODO(eladalon): call_tests aren't actually video-specific, so we
+       # should move them to a more appropriate test suite.
+       "call:call_tests",
+-      "modules/video_capture",
++      # "modules/video_capture",
+       "rtc_base:rtc_base_tests_utils",
+       "test:test_common",
+       "test:test_main",
+diff --git a/common_video/BUILD.gn b/common_video/BUILD.gn
+index 669fa7a54..1dcc7ce85 100644
+--- a/common_video/BUILD.gn
++++ b/common_video/BUILD.gn
+@@ -117,7 +117,7 @@ if (rtc_include_tests) {
+     deps = [
+       ":common_video",
+       "../api:video_frame_api_i420",
+-      "../modules/video_capture:video_capture",
++      # "../modules/video_capture:video_capture",
+       "../rtc_base:rtc_base",
+       "../rtc_base:rtc_base_approved",
+       "../system_wrappers:system_wrappers",
+diff --git a/media/BUILD.gn b/media/BUILD.gn
+index f59cbb63e..613bc5d71 100644
+--- a/media/BUILD.gn
++++ b/media/BUILD.gn
+@@ -227,10 +227,10 @@ rtc_static_library("rtc_audio_video") {
+ 
+   public_configs = []
+   if (build_with_chromium) {
+-    deps += [ "../modules/video_capture:video_capture" ]
++    # deps += [ "../modules/video_capture:video_capture" ]
+   } else {
+     public_configs += [ ":rtc_media_defines_config" ]
+-    deps += [ "../modules/video_capture:video_capture_internal_impl" ]
++    # deps += [ "../modules/video_capture:video_capture_internal_impl" ]
+   }
+   if (rtc_enable_protobuf) {
+     deps += [ "../modules/audio_processing/aec_dump:aec_dump_impl" ]
+@@ -255,7 +255,7 @@ rtc_static_library("rtc_audio_video") {
+     "../modules/audio_mixer:audio_mixer_impl",
+     "../modules/audio_processing:audio_processing",
+     "../modules/audio_processing/aec_dump",
+-    "../modules/video_capture:video_capture_module",
++    # "../modules/video_capture:video_capture_module",
+     "../modules/video_coding",
+     "../modules/video_coding:webrtc_h264",
+     "../modules/video_coding:webrtc_vp8",
+diff --git a/modules/BUILD.gn b/modules/BUILD.gn
+index 465f32d3c..4918bc8b8 100644
+--- a/modules/BUILD.gn
++++ b/modules/BUILD.gn
+@@ -255,7 +255,7 @@ if (rtc_include_tests) {
+       "remote_bitrate_estimator:remote_bitrate_estimator_unittests",
+       "rtp_rtcp:rtp_rtcp_unittests",
+       "utility:utility_unittests",
+-      "video_capture",
++      # "video_capture",
+       "video_coding:video_coding_unittests",
+       "video_processing:video_processing_unittests",
+     ]
+-- 
+2.11.0
+
+From 2fc9d106959817098b09ae27e1c15c68a6a0c09d Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Wed, 28 Mar 2018 17:57:09 -0700
+Subject: [PATCH] Temporarily disable ciopfs.
+
+---
+ vs_toolchain.py | 28 ----------------------------
+ 1 file changed, 28 deletions(-)
+
+diff --git a/build/vs_toolchain.py b/build/vs_toolchain.py
+index b8e031a03..249d7189b 100755
+--- a/build/vs_toolchain.py
++++ b/build/vs_toolchain.py
+@@ -393,34 +393,6 @@ def Update(force=False):
+     import find_depot_tools
+     depot_tools_path = find_depot_tools.add_depot_tools_to_path()
+ 
+-    # On Linux, the file system is usually case-sensitive while the Windows
+-    # SDK only works on case-insensitive file systems.  If it doesn't already
+-    # exist, set up a ciopfs fuse mount to put the SDK in a case-insensitive
+-    # part of the file system.
+-    toolchain_dir = os.path.join(depot_tools_path, 'win_toolchain', 'vs_files')
+-    if sys.platform.startswith('linux') and not os.path.ismount(toolchain_dir):
+-      import distutils.spawn
+-      ciopfs = distutils.spawn.find_executable('ciopfs')
+-      if not ciopfs:
+-        # TODO(thakis): Offer to auto-install this?  Or have a
+-        # build/install-build-deps-win.sh script and point to that? (Or run
+-        # that?)
+-        print >>sys.stderr, \
+-            "\n\tCouldn't set up case-insensitive mount for Windows SDK."
+-        print >>sys.stderr, \
+-            "\tPlease run `sudo apt-get install ciopfs` and try again.\n"
+-        return 1
+-      if not os.path.isdir(toolchain_dir):
+-        os.mkdir(toolchain_dir)
+-      if not os.path.isdir(toolchain_dir + '.ciopfs'):
+-        os.mkdir(toolchain_dir + '.ciopfs')
+-      # Without use_ino, clang's #pragma once and Wnonportable-include-path
+-      # both don't work right, see https://llvm.org/PR34931
+-      # use_ino doesn't slow down builds, so it seems there's no drawback to
+-      # just using it always.
+-      subprocess.check_call([
+-          ciopfs, '-o', 'use_ino', toolchain_dir + '.ciopfs', toolchain_dir])
+-
+     # Necessary so that get_toolchain_if_necessary.py will put the VS toolkit
+     # in the correct directory.
+     os.environ['GYP_MSVS_VERSION'] = GetVisualStudioVersion()
+-- 
+2.11.0
+
