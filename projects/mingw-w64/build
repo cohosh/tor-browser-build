@@ -18,6 +18,13 @@ cd builddir/mingw-w64/mingw-w64-headers32
                 --enable-sdk=all --enable-secure-api --enable-idl
 make install
 
+mkdir -p /var/tmp/build/builddir/mingw-w64/winpthreads
+cd /var/tmp/build/builddir/mingw-w64/winpthreads
+/var/tmp/build/[% project %]-[% c("version") %]/mingw-w64-libraries/winpthreads/configure \
+                 --host=[% c("arch") %]-w64-mingw32 --prefix=$distdir/[% c("arch") %]-w64-mingw32
+make -j[% c("buildconf/num_procs") %]
+make install
+
 cd /var/tmp/build
 mkdir gcc
 cd gcc
@@ -60,7 +67,7 @@ make -j[% c("buildconf/num_procs") %]
 make install
 
 cd /var/tmp/build/gcc
-make -j[% c("buildconf/num_procs") %]
+make -j[% c("buildconf/num_procs") %] [% IF c("var/windows") %]GLIBCXX_LIBS=-lpthread[% END %]
 make install
 mkdir -p $distdir/gcclibs
 cp [% c("arch") %]-w64-mingw32/libssp/.libs/libssp-0.dll $distdir/gcclibs
