@@ -243,3 +243,29 @@ index b8e031a03..249d7189b 100755
 -- 
 2.11.0
 
+From cde75f6825498d8879c572a1dbaa644482076a86 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Wed, 4 Apr 2018 00:39:40 -0700
+Subject: [PATCH] Remove /llvmlibthin from lld-link commands.
+
+A thin archive contains only a symbol table, not code.
+---
+ toolchain/win/BUILD.gn | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/build/toolchain/win/BUILD.gn b/build/toolchain/win/BUILD.gn
+index 22054716..c1a4518d 100644
+--- a/build/toolchain/win/BUILD.gn
++++ b/build/toolchain/win/BUILD.gn
+@@ -124,7 +124,7 @@ template("msvc_toolchain") {
+ 
+       # lld-link includes a replacement for lib.exe that can produce thin
+       # archives and understands bitcode (for lto builds).
+-      lib = "$prefix/$lld_link /lib /llvmlibthin"
++      lib = "$prefix/$lld_link /lib"
+       link = "$prefix/$lld_link"
+       if (host_os != "win") {
+         # See comment adding --rsp-quoting to $cl above for more information.
+-- 
+2.11.0
+
