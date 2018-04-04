@@ -33,6 +33,14 @@ var:
       export CC="$clangdir/bin/clang"
       export CXX="$clangdir/bin/clang++"
     [% END -%]
+    [% IF c("var/windows") -%]
+      # __builtin_bswap64 is part of mingw-w64.
+      sed -i -E -e 's/(ntohll|htonll)/__builtin_bswap64/g' include/rtc_base/byteorder.h
+      export CC="[% c("arch") %]-w64-mingw32-gcc"
+      export CXX="[% c("arch") %]-w64-mingw32-g++"
+      # export CGO_CXXFLAGS="-Iinclude -DWEBRTC_WIN=1"
+      # export CGO_LDFLAGS="-Ilib"
+    [% END -%]
 
 targets:
   linux-i686:
@@ -46,6 +54,10 @@ targets:
         - pkg-config
         - libx11-dev
   osx-x86_64:
+    var:
+      arch_deps:
+        - pkg-config
+  windows:
     var:
       arch_deps:
         - pkg-config
