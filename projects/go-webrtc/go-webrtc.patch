@@ -1,0 +1,113 @@
+From 82f15dd661cf5c8b9d7285c379359b17a9b0d651 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Wed, 4 Apr 2018 00:09:45 -0700
+Subject: [PATCH 1/2] Stop hardcoding WEBRTC_POSIX=1.
+
+---
+ ctestenums.h     | 2 --
+ datachannel.h    | 2 --
+ peerconnection.h | 2 --
+ 3 files changed, 6 deletions(-)
+
+diff --git a/ctestenums.h b/ctestenums.h
+index 13ec2b7..ec3cd91 100644
+--- a/ctestenums.h
++++ b/ctestenums.h
+@@ -1,8 +1,6 @@
+ #ifndef _C_TEST_ENUMS_H_
+ #define _C_TEST_ENUMS_H_
+ 
+-#define WEBRTC_POSIX 1
+-
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+diff --git a/datachannel.h b/datachannel.h
+index eeec66b..63a1575 100644
+--- a/datachannel.h
++++ b/datachannel.h
+@@ -1,8 +1,6 @@
+ #ifndef _C_DATACHANNEL_H_
+ #define _C_DATACHANNEL_H_
+ 
+-#define WEBRTC_POSIX 1
+-
+ #include <stdbool.h>
+ 
+ #ifdef __cplusplus
+diff --git a/peerconnection.h b/peerconnection.h
+index 57c19b3..6808c70 100644
+--- a/peerconnection.h
++++ b/peerconnection.h
+@@ -1,8 +1,6 @@
+ #ifndef _C_PEERCONNECTION_H_
+ #define _C_PEERCONNECTION_H_
+ 
+-#define WEBRTC_POSIX 1
+-
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+-- 
+2.11.0
+
+
+From 06b43f3cd1f51ce6b2861cdbcf7e9bc9463e6a45 Mon Sep 17 00:00:00 2001
+From: David Fifield <david@bamsoftware.com>
+Date: Wed, 4 Apr 2018 00:26:23 -0700
+Subject: [PATCH 2/2] webrtc-windows-amd64.pc
+
+---
+ datachannel.go          |  1 +
+ peerconnection.go       |  1 +
+ webrtc-windows-amd64.pc | 14 ++++++++++++++
+ 3 files changed, 16 insertions(+)
+ create mode 100644 webrtc-windows-amd64.pc
+
+diff --git a/datachannel.go b/datachannel.go
+index 7ac64f4..fa7bde9 100644
+--- a/datachannel.go
++++ b/datachannel.go
+@@ -13,6 +13,7 @@ package webrtc
+ #cgo linux,386 pkg-config: webrtc-linux-386.pc
+ #cgo linux,amd64 pkg-config: webrtc-linux-amd64.pc
+ #cgo darwin,amd64 pkg-config: webrtc-darwin-amd64.pc
++#cgo windows,amd64 pkg-config: webrtc-windows-amd64.pc
+ #include <stdlib.h>  // Needed for C.free
+ #include "datachannel.h"
+ */
+diff --git a/peerconnection.go b/peerconnection.go
+index 11d9d54..11b2645 100644
+--- a/peerconnection.go
++++ b/peerconnection.go
+@@ -36,6 +36,7 @@ package webrtc
+ #cgo linux,386 pkg-config: webrtc-linux-386.pc
+ #cgo linux,amd64 pkg-config: webrtc-linux-amd64.pc
+ #cgo darwin,amd64 pkg-config: webrtc-darwin-amd64.pc
++#cgo windows,amd64 pkg-config: webrtc-windows-amd64.pc
+ #include <stdlib.h>  // Needed for C.free
+ #include "peerconnection.h"
+ #include "ctestenums.h"
+diff --git a/webrtc-windows-amd64.pc b/webrtc-windows-amd64.pc
+new file mode 100644
+index 0000000..54b16aa
+--- /dev/null
++++ b/webrtc-windows-amd64.pc
+@@ -0,0 +1,14 @@
++pc=${pcfiledir}
++
++Name: webrtc
++Description: webrtc
++Version: 1
++
++Cflags: \
++	-I${pc}/include \
++	-D_GLIBCXX_USE_CXX11_ABI=0 \
++	-DWEBRTC_WIN
++
++Libs: \
++	-L${pc}/lib \
++	-lwebrtc-windows-amd64-magic
+-- 
+2.11.0
+

@@ -20,6 +20,9 @@ var:
     # Replace the prebuilt webrtc library with our own one.
     rm -rf include/ lib/
     cp -a /var/tmp/dist/webrtc/{include,lib} .
+    [% IF c("var/windows") -%]
+    mv lib/libwebrtc-windows-amd64-magic.lib lib/libwebrtc-windows-amd64-magic.a
+    [% END -%]
     [% IF c("var/linux") -%]
       # __STDC_FORMAT_MACROS is needed for a definition of PRIxPTR from inttypes.h.
       export CGO_CXXFLAGS="-D__STDC_FORMAT_MACROS=1"
@@ -38,8 +41,8 @@ var:
       sed -i -E -e 's/(ntohll|htonll)/__builtin_bswap64/g' include/rtc_base/byteorder.h
       export CC="[% c("arch") %]-w64-mingw32-gcc"
       export CXX="[% c("arch") %]-w64-mingw32-g++"
-      # export CGO_CXXFLAGS="-Iinclude -DWEBRTC_WIN=1"
-      # export CGO_LDFLAGS="-Ilib"
+      export CGO_CXXFLAGS="-Iinclude -DWEBRTC_WIN=1"
+      export CGO_LDFLAGS="-Ilib"
     [% END -%]
 
 targets:
@@ -73,3 +76,5 @@ input_files:
   - name: binutils
     project: binutils
     enable: '[% c("var/linux") %]'
+  - filename: go-webrtc.patch
+    enable: '[% c("var/windows") %]'
