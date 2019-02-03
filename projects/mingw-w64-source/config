@@ -1,0 +1,8 @@
+# vim: filetype=yaml sw=2
+version: '[% c("abbrev") %]'
+git_url: https://git.code.sf.net/p/mingw-w64/mingw-w64
+git_hash: a3b01285793fe405ce6eae883cd5ebacdfd819ae
+filename: '[% project %]-[% c("version") %]-[% c("var/build_id") %].tar.gz'
+
+input_files:
+  - filename: math.patch
