@@ -22,6 +22,9 @@ input_files:
   - project: gcc
     name: gcc
     enable: '[% c("var/windows") %]'
+  - name: mingw-w64-clang
+    project: mingw-w64-clang
+    enable: '[% c("var/windows") %]'
   - project: win_sdk
     name: win_sdk
     enable: '[% c("var/windows") %]'

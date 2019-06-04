@@ -6,6 +6,7 @@ set -e
   # This gcc is used only to compile the bootstrap gn.
   mkdir -p /var/tmp/dist
   tar -C /var/tmp/dist -xf $rootdir/[% c('input_files_by_name/gcc') %]
+  tar -C /var/tmp/dist -xf $rootdir/[% c('input_files_by_name/mingw-w64-clang') %]
   hgccdir=/var/tmp/dist/gcc
   export PATH=$hgccdir/bin:$PATH
   [% IF c("var/windows-i686") -%]
@@ -199,7 +200,16 @@ GN_ARGS+=" use_custom_libcxx=false"
 [% IF c("var/windows") -%]
   # Note, starting GN_ARGS over empty.
   GN_ARGS=""
+  # There are several warnings about implicitly deleted default constructors
+  GN_ARGS+=" treat_warnings_as_errors=false"
+  GN_ARGS+=" clang_use_chrome_plugins=false"
+  mingwclangdir=/var/tmp/dist/mingw-w64-clang
+  GN_ARGS+=" clang_base_path=\"$mingwclangdir\""
   GN_ARGS+=" target_os=\"win\" target_cpu=\"[% IF c("var/windows-i686") %]x86[% ELSE %]x64[% END %]\""
+  # Avoid some dependencies.
+  GN_ARGS+=" rtc_include_opus=false rtc_include_ilbc=false rtc_include_internal_audio_device=false"
+  # Make sure not to use bundled clang and binutils.
+  rm -rf third_party/llvm-build
 [% END -%]
 rm -rf out/Release
 "$GN" gen out/Release --args="$GN_ARGS"
