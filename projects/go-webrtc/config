@@ -21,7 +21,9 @@ var:
     rm -rf include/ lib/
     cp -a /var/tmp/dist/webrtc/{include,lib} .
     [% IF c("var/windows") -%]
-    mv lib/libwebrtc-windows-amd64-magic.lib lib/libwebrtc-windows-amd64-magic.a
+      tar -C /var/tmp/dist -xf $rootdir/[% c('input_files_by_name/mingw-w64-clang') %]
+      export PATH="/var/tmp/dist/mingw-w64-clang/bin:$PATH"
+      mv lib/libwebrtc-windows-amd64-magic.lib lib/libwebrtc-windows-amd64-magic.a
     [% END -%]
     [% IF c("var/linux") -%]
       # __STDC_FORMAT_MACROS is needed for a definition of PRIxPTR from inttypes.h.
@@ -39,8 +41,8 @@ var:
     [% IF c("var/windows") -%]
       # __builtin_bswap64 is part of mingw-w64.
       sed -i -E -e 's/(ntohll|htonll)/__builtin_bswap64/g' include/rtc_base/byteorder.h
-      export CC="[% c("arch") %]-w64-mingw32-gcc"
-      export CXX="[% c("arch") %]-w64-mingw32-g++"
+      export CC="[% c("arch") %]-w64-mingw32-clang"
+      export CXX="[% c("arch") %]-w64-mingw32-clang++"
       export CGO_CXXFLAGS="-Iinclude -DWEBRTC_WIN=1"
       export CGO_LDFLAGS="-Ilib"
     [% END -%]
@@ -76,5 +78,8 @@ input_files:
   - name: binutils
     project: binutils
     enable: '[% c("var/linux") %]'
+  - name: mingw-w64-clang
+    project: mingw-w64-clang
+    enable: '[% c("var/windows") %]'
   - filename: go-webrtc.patch
     enable: '[% c("var/windows") %]'
