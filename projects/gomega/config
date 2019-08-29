@@ -1,0 +1,51 @@
+# vim: filetype=yaml sw=2
+version: '[% c("abbrev") %]'
+git_url: https://github.com/onsi/gomega
+git_hash: v1.4.3
+filename: '[% project %]-[% c("version") %]-[% c("var/osname") %]-[% c("var/build_id") %].tar.gz'
+
+build: '[% c("projects/go/var/build_go_lib") %]'
+
+var:
+  container:
+    use_container: 1
+  go_lib: github.com/onsi/gomega
+  go_lib_deps:
+    - fsnotify
+    - ginkgo
+    - gofsnotify
+    - goprotobuf
+    - gotail
+    - gotomb
+    - goxnet
+    - goxsync
+    - goxsys
+    - goxtext
+    - goyaml
+
+input_files:
+  - project: container-image
+  - name: go
+    project: go
+  - name: fsnotify
+    project: fsnotify
+  - name: ginkgo
+    project: ginkgo
+  - name: gofsnotify
+    project: gofsnotify
+  - name: goprotobuf
+    project: goprotobuf
+  - name: gotail
+    project: gotail
+  - name: gotomb
+    project: gotomb
+  - name: goxnet
+    project: goxnet
+  - name: goxsync
+    project: goxsync
+  - name: goxsys
+    project: goxsys
+  - name: goxtext
+    project: goxtext
+  - name: goyaml
+    project: goyaml
