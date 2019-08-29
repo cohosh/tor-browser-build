@@ -1,7 +1,7 @@
 # vim: filetype=yaml sw=2
 version: '[% c("abbrev") %]'
 git_url: https://git.torproject.org/pluggable-transports/snowflake.git
-git_hash: cd650fa0097f948b15dddd889ad2e6908b58bd66
+git_hash: 3cc240625cad22db02eca7af41b139606c13147d
 filename: '[% project %]-[% c("version") %]-[% c("var/osname") %]-[% c("var/build_id") %].tar.gz'
 
 var:
@@ -29,14 +29,9 @@ input_files:
   - project: container-image
   - name: go
     project: go
-  - name: '[% c("var/compiler") %]'
-    project: '[% c("var/compiler") %]'
-  - name: binutils
-    project: binutils
-    enable: '[% c("var/linux") %]'
-  - name: go-webrtc
-    project: go-webrtc
   - name: uniuri
     project: uniuri
   - name: goptlib
     project: goptlib
+  - name: pion-webrtc
+    project: pion-webrtc
