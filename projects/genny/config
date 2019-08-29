@@ -10,8 +10,12 @@ var:
   container:
     use_container: 1
   go_lib: github.com/cheekybits/genny
+  go_lib_deps:
+    - goxtools
 
 input_files:
   - project: container-image
   - name: go
     project: go
+  - name: goxtools
+    project: goxtools

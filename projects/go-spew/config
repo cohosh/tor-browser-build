@@ -10,6 +10,8 @@ var:
   container:
     use_container: 1
   go_lib: github.com/davecgh/go-spew
+  go_lib_install:
+    - github.com/davecgh/go-spew/spew
 
 input_files:
   - project: container-image

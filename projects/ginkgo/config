@@ -10,8 +10,12 @@ var:
   container:
     use_container: 1
   go_lib: github.com/onsi/ginkgo
+  go_lib_deps:
+    - gotail
 
 input_files:
   - project: container-image
   - name: go
     project: go
+  - name: gotail
+    project: gotail

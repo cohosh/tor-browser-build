@@ -11,14 +11,12 @@ var:
     use_container: 1
   go_lib: github.com/onsi/gomega
   go_lib_deps:
-    - fsnotify
     - ginkgo
     - gofsnotify
     - goprotobuf
     - gotail
     - gotomb
     - goxnet
-    - goxsync
     - goxsys
     - goxtext
     - goyaml
@@ -27,8 +25,6 @@ input_files:
   - project: container-image
   - name: go
     project: go
-  - name: fsnotify
-    project: fsnotify
   - name: ginkgo
     project: ginkgo
   - name: gofsnotify
@@ -41,8 +37,6 @@ input_files:
     project: gotomb
   - name: goxnet
     project: goxnet
-  - name: goxsync
-    project: goxsync
   - name: goxsys
     project: goxsys
   - name: goxtext

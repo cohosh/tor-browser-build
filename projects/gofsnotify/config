@@ -10,8 +10,12 @@ var:
   container:
     use_container: 1
   go_lib: gopkg.in/fsnotify.v1
+  go_lib_deps:
+    - goxsys
 
 input_files:
   - project: container-image
   - name: go
     project: go
+  - name: goxsys
+    project: goxsys

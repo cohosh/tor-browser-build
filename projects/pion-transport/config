@@ -13,6 +13,10 @@ var:
   go_lib_deps:
     - pion-logging
     - testify
+  go_lib_install:
+    - github.com/pion/transport/packetio
+    - github.com/pion/transport/test
+    - github.com/pion/transport/vnet
 
 input_files:
   - project: container-image

@@ -10,6 +10,8 @@ var:
   container:
     use_container: 1
   go_lib: github.com/pmezard/go-difflib
+  go_lib_install:
+    - github.com/pmezard/go-difflib/difflib
 
 input_files:
   - project: container-image

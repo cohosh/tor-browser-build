@@ -10,6 +10,8 @@ var:
   container:
     use_container: 1
   go_lib: github.com/golang/protobuf
+  go_lib_install:
+    - github.com/golang/protobuf/proto
 
 input_files:
   - project: container-image
