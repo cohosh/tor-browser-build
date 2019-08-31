@@ -1,7 +1,7 @@
 # vim: filetype=yaml sw=2
 version: '[% c("abbrev") %]'
 git_url: https://github.com/pion/ice
-git_hash: 7a3c082120973865120330d1395f75ed3dbac930 # v0.5.7
+git_hash: 935aca0809b925a973ac8072e4c536d792fc5269 # v0.4.0
 filename: '[% project %]-[% c("version") %]-[% c("var/osname") %]-[% c("var/build_id") %].tar.gz'
 
 build: '[% c("projects/go/var/build_go_lib") %]'
@@ -12,12 +12,12 @@ var:
   go_lib: github.com/pion/ice
   go_lib_deps:
     - goxnet
-    - goxsys
     - pion-logging
     - pion-mdns
     - pion-stun
     - pion-transport
     - pion-turn
+    - pion-turnc
     - testify
 
 input_files:
@@ -26,8 +26,6 @@ input_files:
     project: go
   - name: goxnet
     project: goxnet
-  - name: goxsys
-    project: goxsys
   - name: pion-logging
     project: pion-logging
   - name: pion-mdns
@@ -38,5 +36,7 @@ input_files:
     project: pion-transport
   - name: pion-turn
     project: pion-turn
+  - name: pion-turnc
+    project: pion-turnc
   - name: testify
     project: testify

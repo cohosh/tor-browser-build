@@ -1,7 +1,7 @@
 # vim: filetype=yaml sw=2
 version: '[% c("abbrev") %]'
-git_url: https://github.com/pion/mdns
-git_hash: 5b697aed5cb338e7cd9934c50a0bea0698e2660a # v0.0.2
+git_url: https://github.com/gortc/turn
+git_hash: v0.7.3
 filename: '[% project %]-[% c("version") %]-[% c("var/osname") %]-[% c("var/build_id") %].tar.gz'
 
 build: '[% c("projects/go/var/build_go_lib") %]'
@@ -9,16 +9,13 @@ build: '[% c("projects/go/var/build_go_lib") %]'
 var:
   container:
     use_container: 1
-  go_lib: github.com/pion/mdns
+  go_lib: github.com/gortc/turn
   go_lib_deps:
-    - goxnet
-    - pion-logging
+    - pion-stun
 
 input_files:
   - project: container-image
   - name: go
     project: go
-  - name: goxnet
-    project: goxnet
-  - name: pion-logging
-    project: pion-logging
+  - name: pion-stun
+    project: pion-stun
