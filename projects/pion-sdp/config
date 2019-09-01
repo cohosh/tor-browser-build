@@ -1,7 +1,7 @@
 # vim: filetype=yaml sw=2
 version: '[% c("abbrev") %]'
 git_url: https://github.com/pion/sdp
-git_hash: c07d6a43f452272ca7917e33a0b1cbacb15d08f1 # v2.2.0
+git_hash: 03441e3c706c7c3b719ee75194049a31cbb2eb7e # v2.3.0
 filename: '[% project %]-[% c("version") %]-[% c("var/osname") %]-[% c("var/build_id") %].tar.gz'
 
 build: '[% c("projects/go/var/build_go_lib") %]'

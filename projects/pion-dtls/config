@@ -1,7 +1,7 @@
 # vim: filetype=yaml sw=2
 version: '[% c("abbrev") %]'
 git_url: https://github.com/pion/dtls
-git_hash: b2431c083340db3824917aea669b9e5b944644d6 # v1.3.5
+git_hash: 91d652d3f91d6c08c193e4d297067f8f653775f9 # v1.5.1
 filename: '[% project %]-[% c("version") %]-[% c("var/osname") %]-[% c("var/build_id") %].tar.gz'
 
 build: '[% c("projects/go/var/build_go_lib") %]'
