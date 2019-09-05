@@ -1,7 +1,7 @@
 # vim: filetype=yaml sw=2
 version: '[% c("abbrev") %]'
 git_url: https://github.com/cohosh/snowflake
-git_hash: 3cc240625cad22db02eca7af41b139606c13147d
+git_hash: e5040c70f9a4d8e47ed9e37b2f0c944859a9c56c
 filename: '[% project %]-[% c("version") %]-[% c("var/osname") %]-[% c("var/build_id") %].tar.gz'
 
 var:
